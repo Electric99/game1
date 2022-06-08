@@ -22,7 +22,7 @@ playerY_change = 0
 #Soldier
 soldierImg = pygame.image.load('soldier.png')
 soldierX = random.randint(0, 735)
-soldierY = random.randint(50, 735)
+soldierY = random.randint(50, 500)
 soldierX_change = 0.1
 soldierY_change = 15
 
@@ -129,7 +129,7 @@ while running:
         score += 1
         print(score)
         soldierX = random.randint(0, 735)
-        soldierY = random.randint(50, 735)
+        soldierY = random.randint(50, 500)
 
     player(playerX, playerY)
     soldier(soldierX, soldierY)
