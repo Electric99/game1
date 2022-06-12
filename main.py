@@ -20,11 +20,19 @@ playerX_change = 0
 playerY_change = 0
 
 #Soldier
-soldierImg = pygame.image.load('soldier.png')
-soldierX = random.randint(0, 735)
-soldierY = random.randint(50, 500)
-soldierX_change = 0.1
-soldierY_change = 15
+soldierImg = []
+soldierX = []
+soldierY = []
+soldierX_change = []
+soldierY_change = []
+num_of_soldiers = 6
+
+for i in range(num_of_soldiers):
+    soldierImg.append(pygame.image.load('soldier.png'))
+    soldierX.append(random.randint(0, 735))
+    soldierY.append((random.randint(50, 500)))
+    soldierX_change.append(0.1)
+    soldierY_change.append(15)
 
 #Bullet
 bulletImg = pygame.image.load('bullet.png')
@@ -41,8 +49,8 @@ def player(x, y):
     screen.blit(playerImg, (x, y))
 
 
-def soldier(x, y):
-    screen.blit(soldierImg, (x, y))
+def soldier(x, y, i):
+    screen.blit(soldierImg[i], (x, y))
 
 
 def fire_bullet(x, y):
@@ -52,7 +60,7 @@ def fire_bullet(x, y):
 
 
 def isCollision(soldierX, soldierY, bulletX, bulletY):
-    distance = math.sqrt((math.pow(soldierX-bulletX, 2)) + (math.pow(soldierY-bulletY, 2)))
+    distance = math.sqrt(math.pow(soldierX - bulletX, 2) + (math.pow(soldierY - bulletY, 2)))
     if distance < 27:
         return True
     else:
@@ -104,14 +112,27 @@ while running:
     elif playerY >= 536:
         playerY = 536
 
-    soldierX += soldierX_change
     # Boundaries
-    if soldierX <= 0:
-        soldierX_change = 0.1
-        soldierY += soldierY_change
-    elif soldierX >= 736:
-        soldierX_change = -0.1
-        soldierY += soldierY_change
+    for i in range(num_of_soldiers):
+        soldierX[i] += soldierX_change[i]
+        if soldierX[i] <= 0:
+            soldierX_change[i] = 0.1
+            soldierY[i] += soldierY_change[i]
+        elif soldierX[i] >= 736:
+            soldierX_change[i] = -0.1
+            soldierY[i] += soldierY_change[i]
+
+        collision = isCollision(soldierX[i], soldierY[i], bulletX, bulletY)
+
+        if collision:
+            bulletY = 480
+            bullet_state = "ready"
+            score += 1
+            print(score)
+            soldierX[i] = random.randint(0, 735)
+            soldierY[i] = random.randint(50, 500)
+            
+        soldier(soldierX[i], soldierY[i], i)
 
 #Bullet Movement
     if bulletY <= 0:
@@ -132,5 +153,5 @@ while running:
         soldierY = random.randint(50, 500)
 
     player(playerX, playerY)
-    soldier(soldierX, soldierY)
+
     pygame.display.update()
