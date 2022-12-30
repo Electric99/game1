@@ -1,11 +1,18 @@
 import pygame
 import random
 import math
+from pygame import mixer
+
 #Intialize the game:
 pygame.init()
 
 #screen:
 screen = pygame.display.set_mode((800, 600))
+
+#background sound
+mixer.music.load('background.wav')
+mixer.music.play(-1)
+
 
 #Title and Icon
 pygame.display.set_caption("Battle Thing")
@@ -25,12 +32,12 @@ soldierX = []
 soldierY = []
 soldierX_change = []
 soldierY_change = []
-num_of_soldiers = 6
+num_of_soldiers = 15
 
 for i in range(num_of_soldiers):
     soldierImg.append(pygame.image.load('soldier.png'))
-    soldierX.append(random.randint(0, 735))
-    soldierY.append((random.randint(50, 500)))
+    soldierX.append(random.randint(0, 736))
+    soldierY.append(random.randint(50, 150))
     soldierX_change.append(0.1)
     soldierY_change.append(15)
 
@@ -42,7 +49,27 @@ bulletX_change = 0
 bulletY_change = 1
 bullet_state = "ready"
 
-score = 0
+#Score
+score_value = 0
+font = pygame.font.Font('freesansbold.ttf', 28)
+
+textX = 10
+textY = 10
+
+#game over text
+over_font = pygame.font.Font('freesansbold.ttf', 56)
+
+
+
+
+def show_score(x, y):
+    score = font.render("Score :" + str(score_value), True, (0, 0, 0))
+    screen.blit(score, (x, y))
+
+
+def game_over_text():
+    over_text = over_font.render("GAME OVER", True, (0, 0, 0))
+    screen.blit(over_text, (200, 250))
 
 
 def player(x, y):
@@ -90,6 +117,8 @@ while running:
                 playerY_change = 0.2
             if event.key == pygame.K_SPACE:
                 if bullet_state is "ready":
+                    bullet_Sound = mixer.Sound('laser.wav')
+                    bullet_Sound.play()
                     bulletX = playerX
                     bulletY = playerY
                     fire_bullet(bulletX, bulletY)
@@ -112,8 +141,18 @@ while running:
     elif playerY >= 536:
         playerY = 536
 
-    # Boundaries
+    # enemy movement
     for i in range(num_of_soldiers):
+
+        #game over
+        if soldierY[i] > 440:
+            for j in range(num_of_soldiers):
+                soldierY[j] = 2000
+            game_over_text()
+            break
+
+
+
         soldierX[i] += soldierX_change[i]
         if soldierX[i] <= 0:
             soldierX_change[i] = 0.1
@@ -121,14 +160,14 @@ while running:
         elif soldierX[i] >= 736:
             soldierX_change[i] = -0.1
             soldierY[i] += soldierY_change[i]
-
+        #Collision
         collision = isCollision(soldierX[i], soldierY[i], bulletX, bulletY)
-
         if collision:
+            explosion_Sound = mixer.Sound('explosion.wav')
+            explosion_Sound.play()
             bulletY = 480
             bullet_state = "ready"
-            score += 1
-            print(score)
+            score_value += 1
             soldierX[i] = random.randint(0, 735)
             soldierY[i] = random.randint(50, 500)
             
@@ -136,22 +175,14 @@ while running:
 
 #Bullet Movement
     if bulletY <= 0:
+        bulletY = 480
         bullet_state = "ready"
 
     if bullet_state is "fire":
         fire_bullet(bulletX, bulletY)
         bulletY -= bulletY_change
 
-#Collision
-    collision = isCollision(soldierX, soldierY, bulletX, bulletY)
-    if collision:
-        bulletY = 480
-        bullet_state = "ready"
-        score += 1
-        print(score)
-        soldierX = random.randint(0, 735)
-        soldierY = random.randint(50, 500)
 
     player(playerX, playerY)
-
+    show_score(textX, textY)
     pygame.display.update()
