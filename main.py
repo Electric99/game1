@@ -71,6 +71,9 @@ def game_over_text():
     over_text = over_font.render("GAME OVER", True, (0, 0, 0))
     screen.blit(over_text, (200, 250))
 
+def game_win():
+    over_text = over_font.render("VICTORY", True, (0, 0, 0))
+    screen.blit(over_text, (200, 250))
 
 def player(x, y):
     screen.blit(playerImg, (x, y))
@@ -100,6 +103,14 @@ while running:
 
     # RGB-red,green,blue
     screen.fill((7, 145, 7))
+
+    #Win
+    if score_value>=50:
+        game_win()
+        soldierX=[]
+        soldierY=[]
+        num_of_soldiers=0
+
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -169,7 +180,7 @@ while running:
             bullet_state = "ready"
             score_value += 1
             soldierX[i] = random.randint(0, 735)
-            soldierY[i] = random.randint(50, 500)
+            soldierY[i] = random.randint(50, 400)
             
         soldier(soldierX[i], soldierY[i], i)
 
