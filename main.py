@@ -59,7 +59,8 @@ textY = 10
 #game over text
 over_font = pygame.font.Font('freesansbold.ttf', 56)
 
-
+#Blast Radius
+blast_radius = 27
 
 
 def show_score(x, y):
@@ -91,11 +92,14 @@ def fire_bullet(x, y):
 
 def isCollision(soldierX, soldierY, bulletX, bulletY):
     distance = math.sqrt(math.pow(soldierX - bulletX, 2) + (math.pow(soldierY - bulletY, 2)))
-    if distance < 27:
+    if distance < blast_radius:
         return True
     else:
         return False
 
+
+ke_received = False
+k9_received = False
 
 #Game loop
 running = True
@@ -103,6 +107,9 @@ while running:
 
     # RGB-red,green,blue
     screen.fill((7, 145, 7))
+
+    # reset after super blast
+    blast_radius = 27
 
     #Win
     if score_value>=50:
@@ -116,7 +123,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-        #If a keystroke is pressed check whether it's right or left
+        #If a keystroke is pressed check whether it's right or left or up or down
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 playerX_change = -0.2
@@ -133,11 +140,26 @@ while running:
                     bulletX = playerX
                     bulletY = playerY
                     fire_bullet(bulletX, bulletY)
+            if event.key == pygame.K_e:
+                if k9_received:
+                    blast_radius = 1000000000000
+                else:
+                    ke_received = True
+            if event.key == pygame.K_9:
+                if ke_received:
+                    blast_radius = 1000000000000
+                else:
+                    k9_received = True
 
+                
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                 playerX_change = 0
                 playerY_change = 0
+            if event.key == pygame.K_e:
+                ke_received = False
+            if event.key == pygame.K_9:
+                k9_received = False
 
     playerY += playerY_change
     playerX += playerX_change
