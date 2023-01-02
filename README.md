@@ -1,5 +1,6 @@
-A tank shooting game.
-Setup: Requires a python virtual environment to run.
+A tank shooting game.   
+
+Setup: Recommend a python virtual environment to run. Requires a pygame package installed.
 
 
 ![game](https://github.com/Electric99/game1/blob/main/Capturetankgame_small.png "Screenshot")
