@@ -134,7 +134,7 @@ while running:
             if event.key == pygame.K_DOWN:
                 playerY_change = 0.2
             if event.key == pygame.K_SPACE:
-                if bullet_state is "ready":
+                if bullet_state == "ready":
                     bullet_Sound = mixer.Sound('laser.wav')
                     bullet_Sound.play()
                     bulletX = playerX
@@ -211,7 +211,7 @@ while running:
         bulletY = 480
         bullet_state = "ready"
 
-    if bullet_state is "fire":
+    if bullet_state == "fire":
         fire_bullet(bulletX, bulletY)
         bulletY -= bulletY_change
 
