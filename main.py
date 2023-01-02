@@ -1,6 +1,7 @@
 import pygame
 import random
 import math
+import time
 from pygame import mixer
 
 #Intialize the game:
@@ -62,11 +63,15 @@ over_font = pygame.font.Font('freesansbold.ttf', 56)
 #Blast Radius
 blast_radius = 27
 
+fps = 0
 
 def show_score(x, y):
     score = font.render("Score :" + str(score_value), True, (0, 0, 0))
     screen.blit(score, (x, y))
 
+def show_fps(x, y):
+    fps_obj = font.render("FPS:" + str(int(fps)), True, (0, 0, 0))
+    screen.blit(fps_obj, (x, y))
 
 def game_over_text():
     over_text = over_font.render("GAME OVER", True, (0, 0, 0))
@@ -101,9 +106,20 @@ def isCollision(soldierX, soldierY, bulletX, bulletY):
 ke_received = False
 k9_received = False
 
+last_time = time.time()
+fps_window_cnt = 0
+
+
 #Game loop
 running = True
 while running:
+    #FPS
+    fps_window_cnt += 1
+    if fps_window_cnt == 50:
+        cur_time = time.time()
+        fps = 50/(cur_time - last_time)
+        last_time = cur_time
+        fps_window_cnt = 0
 
     # RGB-red,green,blue
     screen.fill((7, 145, 7))
@@ -218,4 +234,5 @@ while running:
 
     player(playerX, playerY)
     show_score(textX, textY)
+    show_fps(textX, textY + 30)
     pygame.display.update()
